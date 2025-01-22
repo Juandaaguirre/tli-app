@@ -1,4 +1,5 @@
 from typing import Optional
+import streamlit as st
 import os
 from phi.agent import Agent, AgentMemory
 from phi.model.openai import OpenAIChat
@@ -10,12 +11,11 @@ from phi.memory.db.postgres import PgMemoryDb
 from phi.storage.agent.postgres import PgAgentStorage
 from dotenv import load_dotenv
 
-load_dotenv()
-
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_API_KEY = st.secrets.openai.api_key
 
 #db_url = "postgresql+psycopg://ai:ai@localhost:5532/ai"
-db_url = f"postgresql+psycopg://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}" # Add to connect in docker compose
+#db_url = f"postgresql+psycopg://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}" # Add to connect in docker compose
+db_url= f"postgresql+psycopg://{st.secrets.postgres.user}:{st.secrets.postgres.password}@{st.secrets.postgres.host}:{st.secrets.postgres.port}/{st.secrets.postgres.db}"
 
 
 def get_auto_rag_agent(
@@ -36,9 +36,10 @@ def get_auto_rag_agent(
     # Define the knowledge base
     knowledge_base = AgentKnowledge(
         vector_db=Qdrant(
+            url=st.secret.qdrant.url,
             collection="auto_rag_documents_openai",
-            host=os.getenv('QDRANT_HOST', 'localhost'), # Add to connect in docker compose
-            port=int(os.getenv('QDRANT_PORT', 6333)), # Add to connect in docker compose
+            host=st.secrets.qdrant.host, # Add to connect in docker compose
+            port=int(st.secrets.qdrant.port), # Add to connect in docker compose
             embedder=OpenAIEmbedder(model="text-embedding-ada-002", dimensions=1536),
         ),
         num_documents=3,  # Retrieve 3 most relevant documents
