@@ -1,1 +1,13 @@
+cmake
+nest-asyncio
+sqlalchemy
+pyarrow==17.0.0
+phidata
+openai
 streamlit
+bs4
+duckduckgo-search
+qdrant-client
+pgvector
+psycopg[binary]
+pypdf
