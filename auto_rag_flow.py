@@ -9,6 +9,7 @@ from phi.vectordb.qdrant import Qdrant
 from phi.knowledge import AgentKnowledge
 from phi.memory.db.postgres import PgMemoryDb
 from phi.storage.agent.postgres import PgAgentStorage
+from phi.utils.log import logger
 from dotenv import load_dotenv
 
 OPENAI_API_KEY = st.secrets.openai.api_key
@@ -16,7 +17,7 @@ OPENAI_API_KEY = st.secrets.openai.api_key
 #db_url = "postgresql+psycopg://ai:ai@localhost:5532/ai"
 #db_url = f"postgresql+psycopg://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}" # Add to connect in docker compose
 db_url= f"postgresql+psycopg://{st.secrets.postgres.user}:{st.secrets.postgres.password}@{st.secrets.postgres.host}:{st.secrets.postgres.port}/{st.secrets.postgres.db}"
-
+logger.debug(db_url)
 
 def get_auto_rag_agent(
     model_id: str = "gpt-4o-mini",
